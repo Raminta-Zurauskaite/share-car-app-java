@@ -10,10 +10,15 @@ public class DefaultTaskService implements TaskService {
 
     @Override
     public List<Task> getAll(GetAllQuery getAllQuery) {
-
         TaskStatus status = getAllQuery.getStatus();
+        if (status !=null)
+        {
+            return tasks.stream().filter(task -> task.getStatus() == status).collect(Collectors.toList());
+        }
+        else {
+            return tasks;
+        }
 
-        return tasks.stream().filter(task -> task.getStatus() == status).collect(Collectors.toList());
     }
 
     @Override

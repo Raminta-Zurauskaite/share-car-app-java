@@ -1,5 +1,6 @@
 package com.cognizant.sharecar.service;
 
+import org.junit.Before;
 import org.junit.Test;
 
 import java.util.List;
@@ -9,9 +10,15 @@ import static org.hamcrest.Matchers.hasSize;
 
 public class TaskServiceTest {
 
+    private TaskService taskService;
+
+    @Before
+    public void setUp() {
+        taskService = new DefaultTaskService();
+    }
+
     @Test
     public void getAll_NoTaskWereAdded_ReturnEmptyTaskList(){
-        TaskService taskService = new DefaultTaskService();
 
         List<Task> tasks = taskService.getAll(new GetAllQuery());
 
@@ -20,7 +27,6 @@ public class TaskServiceTest {
 
     @Test
     public void getAll_OneTaskWereAdded_ReturnOneTask(){
-        TaskService taskService = new DefaultTaskService();
 
         taskService.add(new Task());
 
@@ -31,7 +37,7 @@ public class TaskServiceTest {
 
     @Test
     public void getAll_StatusIsDone_ReturnEmpty(){
-        TaskService taskService = new DefaultTaskService();
+        setUp();
 
         taskService.add(new Task());
 
@@ -42,12 +48,10 @@ public class TaskServiceTest {
 
     @Test
     public void getAll_StatusIsDoneAndTwoTasksWereAdded_OneIsReturned(){
-        TaskService taskService = new DefaultTaskService();
+        setUp();
 
         taskService.add(new Task());
-        Task doneTask = new Task();
-        doneTask.setStatus(TaskStatus.DONE);
-        taskService.add(doneTask);
+        addTask(TaskStatus.DONE);
 
         List<Task> tasks = taskService.getAll(new GetAllQuery(TaskStatus.DONE));
 
@@ -56,16 +60,20 @@ public class TaskServiceTest {
 
     @Test
     public void getAll_TwoTasksWereAddedAndStatusIsAbsent_ReturnTwoTasks(){
-        TaskService taskService = new DefaultTaskService();
+        setUp();
 
         TaskStatus done = TaskStatus.DONE;
         taskService.add(new Task());
-        Task doneTask = new Task();
-        doneTask.setStatus(done);
-        taskService.add(doneTask);
+        addTask(done);
 
         List<Task> tasks = taskService.getAll(new GetAllQuery());
 
         assertThat(tasks, hasSize(2));
+    }
+
+    private void addTask(TaskStatus done) {
+        Task doneTask = new Task();
+        doneTask.setStatus(done);
+        taskService.add(doneTask);
     }
 }
