@@ -53,4 +53,19 @@ public class TaskServiceTest {
 
         assertThat(tasks, hasSize(1));
     }
+
+    @Test
+    public void getAll_TwoTasksWereAddedAndStatusIsAbsent_ReturnTwoTasks(){
+        TaskService taskService = new DefaultTaskService();
+
+        TaskStatus done = TaskStatus.DONE;
+        taskService.add(new Task());
+        Task doneTask = new Task();
+        doneTask.setStatus(done);
+        taskService.add(doneTask);
+
+        List<Task> tasks = taskService.getAll(new GetAllQuery());
+
+        assertThat(tasks, hasSize(2));
+    }
 }
